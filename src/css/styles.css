@@ -127,3 +127,7 @@ form button:hover {
 .loader-hide {
   display: none;
 }
+
+.btn-hidden{
+  display: none;
+}

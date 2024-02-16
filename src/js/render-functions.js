@@ -10,17 +10,20 @@ import iconError from '../img/iconError.svg';
 
 import axios from 'axios';
 
-
 const form = document.querySelector('form');
 const container = document.querySelector('.gallery');
 const loader = document.querySelector('.loader');
+const loadMoreBtn = document.querySelector('.loadBtn');
 
+let query = null;
 form.addEventListener('submit', onFormSubmit);
 function onFormSubmit(evt) {
   evt.preventDefault();
 
   const userData = evt.target.elements.userInput.value.trim();
+  query = userData;
   loader.classList.remove('loader-hide');
+  loadMoreBtn.classList.add('btn-hidden');
   const galleryItem = new galleryApi();
   galleryItem
     .getDataImg(userData)
@@ -38,6 +41,7 @@ function onFormSubmit(evt) {
           maxWidth: '350px',
         });
         container.innerHTML = '';
+        loadMoreBtn.classList.add('btn-hidden');
       }
       return item.hits;
     })
@@ -92,6 +96,7 @@ function galleryItemTemplate({
 function createGallery(item) {
   const markup = item.map(galleryItemTemplate).join('');
   container.innerHTML = markup;
+ 
 
   let lightBoxInstance = new SimpleLightbox('.gallery-link ', {
     captionPosition: 'bottom',
@@ -100,4 +105,8 @@ function createGallery(item) {
     captionDelay: 250,
   });
   lightBoxInstance.refresh();
+}
+loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
+async function onLoadMoreBtnClick{
+  const response = await axios()
 }
