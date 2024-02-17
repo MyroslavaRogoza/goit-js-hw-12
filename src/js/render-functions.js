@@ -114,10 +114,25 @@ async function onLoadMoreBtnClick() {
 
   const response = await galleryItem.getDataImg(query);
   totalPages = response.totalHits;
-  if (totalPages/galleryItem.per_page >= 0) {
-    loadMoreGalley(response.hits);
+  loadMoreGalley(response.hits);
+  checkLoadBtnStataus(totalPages);
+}
+
+function checkLoadBtnStataus(totalhits) {
+  const groupOfPages = Math.ceil(totalhits / galleryItem.per_page);
+  console.log(galleryItem.page, '<', groupOfPages);
+  if (galleryItem.page < groupOfPages) {
+    loadMoreBtn.classList.remove('btn-hidden');
   } else {
-    return;
+    loadMoreBtn.classList.add('btn-hidden');
+    iziToast.show({
+      position: 'topRight',
+      message: "We're sorry, but you've reached the end of search results.",
+      theme: 'dark',
+      messageColor: '#fafafb',
+      backgroundColor: '#8f7dff',
+      maxWidth: '350px',
+    });
   }
 }
 
