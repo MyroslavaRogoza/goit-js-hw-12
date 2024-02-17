@@ -124,10 +124,6 @@ form button:hover {
     transform: rotate(360deg);
   }
 }
-.loader-hide {
-  display: none;
-}
-
-.btn-hidden{
+.hidden {
   display: none;
 }

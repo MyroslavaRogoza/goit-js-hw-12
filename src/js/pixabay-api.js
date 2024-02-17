@@ -1,3 +1,5 @@
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 import axios from 'axios';
 const loader = document.querySelector('.loader');
 const loadMoreBtn = document.querySelector('.loadBtn');
@@ -20,8 +22,7 @@ export class galleryApi {
     });
     try {
       const response = await axios.get(this.url + params);
-      loader.classList.add('loader-hide');
-      loadMoreBtn.classList.remove('btn-hidden');
+      loader.classList.add('hidden');
       return response.data;
     } catch (error) {
       console.log(error);

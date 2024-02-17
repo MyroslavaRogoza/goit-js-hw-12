@@ -14,11 +14,11 @@ const form = document.querySelector('form');
 const container = document.querySelector('.gallery');
 const loader = document.querySelector('.loader');
 const loadMoreBtn = document.querySelector('.loadBtn');
+const loadMoreLoader = document.querySelector('.load-more');
 
 const galleryInstance = new galleryApi();
 let query = null;
 let totalPages = 0;
-
 let galleryItemHeight;
 
 form.addEventListener('submit', onFormSubmit);
@@ -28,8 +28,8 @@ function onFormSubmit(evt) {
   const userData = evt.target.elements.userInput.value.trim();
   query = userData;
   galleryInstance.page = 1;
-  loader.classList.remove('loader-hide');
-  loadMoreBtn.classList.add('btn-hidden');
+  loader.classList.remove('hidden');
+  loadMoreBtn.classList.add('hidden');
 
   galleryInstance
     .getDataImg(userData)
@@ -47,11 +47,11 @@ function onFormSubmit(evt) {
           maxWidth: '350px',
         });
         container.innerHTML = '';
-        loadMoreBtn.classList.add('btn-hidden');
       }
       return item.hits;
     })
     .then(createGallery);
+  loadMoreBtn.classList.remove('hidden');
   evt.target.reset();
 }
 
@@ -102,40 +102,41 @@ function galleryItemTemplate({
 function createGallery(item) {
   const markup = item.map(galleryItemTemplate).join('');
   container.innerHTML = markup;
-
-  const galleryItem = document.querySelector('.gallery-item');
-  galleryItemHeight = galleryItem.getBoundingClientRect().height;
-  console.log(galleryItemHeight);
-
   let lightBoxInstance = new SimpleLightbox('.gallery-link ', {
     captionPosition: 'bottom',
     captionSelector: 'img',
     captionsData: 'alt',
     captionDelay: 250,
   });
+
   lightBoxInstance.refresh();
+  const galleryItem = document.querySelector('.gallery-item');
+  galleryItemHeight = galleryItem.getBoundingClientRect().height;
 }
 
 loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
 async function onLoadMoreBtnClick() {
+  loadMoreBtn.classList.add('hidden');
+  loadMoreLoader.classList.remove('hidden');
   galleryInstance.page++;
 
   const response = await galleryInstance.getDataImg(query);
   totalPages = response.totalHits;
+  loadMoreLoader.classList.add('hidden');
   loadMoreGalley(response.hits);
-  checkLoadBtnStataus(totalPages);
+  checkLoadBtnStatus(totalPages);
   window.scrollBy({
     top: galleryItemHeight * 2,
     behavior: 'smooth',
   });
 }
 
-function checkLoadBtnStataus(totalhits) {
+function checkLoadBtnStatus(totalhits) {
   const groupOfPages = Math.ceil(totalhits / galleryInstance.per_page);
   if (galleryInstance.page < groupOfPages) {
-    loadMoreBtn.classList.remove('btn-hidden');
+    loadMoreBtn.classList.remove('hidden');
   } else {
-    loadMoreBtn.classList.add('btn-hidden');
+    loadMoreBtn.classList.add('hidden');
     iziToast.show({
       position: 'topRight',
       message: "We're sorry, but you've reached the end of search results.",
@@ -150,4 +151,10 @@ function checkLoadBtnStataus(totalhits) {
 function loadMoreGalley(item) {
   const markup = item.map(galleryItemTemplate).join('');
   container.insertAdjacentHTML('beforeend', markup);
+  let lightBoxInstance = new SimpleLightbox('.gallery-link ', {
+    captionPosition: 'bottom',
+    captionSelector: 'img',
+    captionsData: 'alt',
+    captionDelay: 250,
+  });
 }
