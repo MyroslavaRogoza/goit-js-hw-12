@@ -14,9 +14,12 @@ const form = document.querySelector('form');
 const container = document.querySelector('.gallery');
 const loader = document.querySelector('.loader');
 const loadMoreBtn = document.querySelector('.loadBtn');
-const galleryItem = new galleryApi();
+
+const galleryInstance = new galleryApi();
 let query = null;
 let totalPages = 0;
+
+let galleryItemHeight;
 
 form.addEventListener('submit', onFormSubmit);
 function onFormSubmit(evt) {
@@ -24,11 +27,11 @@ function onFormSubmit(evt) {
 
   const userData = evt.target.elements.userInput.value.trim();
   query = userData;
-  galleryItem.page = 1;
+  galleryInstance.page = 1;
   loader.classList.remove('loader-hide');
   loadMoreBtn.classList.add('btn-hidden');
 
-  galleryItem
+  galleryInstance
     .getDataImg(userData)
     .then(item => {
       if (item.hits.length === 0) {
@@ -100,6 +103,10 @@ function createGallery(item) {
   const markup = item.map(galleryItemTemplate).join('');
   container.innerHTML = markup;
 
+  const galleryItem = document.querySelector('.gallery-item');
+  galleryItemHeight = galleryItem.getBoundingClientRect().height;
+  console.log(galleryItemHeight);
+
   let lightBoxInstance = new SimpleLightbox('.gallery-link ', {
     captionPosition: 'bottom',
     captionSelector: 'img',
@@ -108,20 +115,24 @@ function createGallery(item) {
   });
   lightBoxInstance.refresh();
 }
+
 loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
 async function onLoadMoreBtnClick() {
-  galleryItem.page++;
+  galleryInstance.page++;
 
-  const response = await galleryItem.getDataImg(query);
+  const response = await galleryInstance.getDataImg(query);
   totalPages = response.totalHits;
   loadMoreGalley(response.hits);
   checkLoadBtnStataus(totalPages);
+  window.scrollBy({
+    top: galleryItemHeight * 2,
+    behavior: 'smooth',
+  });
 }
 
 function checkLoadBtnStataus(totalhits) {
-  const groupOfPages = Math.ceil(totalhits / galleryItem.per_page);
-  console.log(galleryItem.page, '<', groupOfPages);
-  if (galleryItem.page < groupOfPages) {
+  const groupOfPages = Math.ceil(totalhits / galleryInstance.per_page);
+  if (galleryInstance.page < groupOfPages) {
     loadMoreBtn.classList.remove('btn-hidden');
   } else {
     loadMoreBtn.classList.add('btn-hidden');
