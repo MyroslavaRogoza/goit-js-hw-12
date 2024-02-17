@@ -109,7 +109,6 @@ function createGallery(item) {
     captionsData: 'alt',
     captionDelay: 250,
   });
-  lightBoxInstance.refresh();
   const galleryItem = document.querySelector('.gallery-item');
   galleryItemHeight = galleryItem.getBoundingClientRect().height;
 }

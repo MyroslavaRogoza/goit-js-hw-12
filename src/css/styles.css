@@ -59,7 +59,7 @@ form button {
 .user-input::placeholder {
   color: #808080;
 }
-form button {
+.load-btn {
   display: inline-block;
   font-weight: 500;
   font-size: 16px;
@@ -73,7 +73,7 @@ form button {
   transition: background-color 300ms ease-out;
 }
 
-form button:hover {
+.load-btn:hover {
   background: #6c8cff;
 }
 .user-input:focus-visible {
