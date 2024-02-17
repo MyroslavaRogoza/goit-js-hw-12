@@ -108,7 +108,6 @@ function createGallery(item) {
     captionsData: 'alt',
     captionDelay: 250,
   });
-
   lightBoxInstance.refresh();
   const galleryItem = document.querySelector('.gallery-item');
   galleryItemHeight = galleryItem.getBoundingClientRect().height;
@@ -124,6 +123,7 @@ async function onLoadMoreBtnClick() {
   totalPages = response.totalHits;
   loadMoreLoader.classList.add('hidden');
   loadMoreGalley(response.hits);
+
   checkLoadBtnStatus(totalPages);
   window.scrollBy({
     top: galleryItemHeight * 2,
@@ -151,10 +151,12 @@ function checkLoadBtnStatus(totalhits) {
 function loadMoreGalley(item) {
   const markup = item.map(galleryItemTemplate).join('');
   container.insertAdjacentHTML('beforeend', markup);
+  lightBoxInstance.refresh();
   let lightBoxInstance = new SimpleLightbox('.gallery-link ', {
     captionPosition: 'bottom',
     captionSelector: 'img',
     captionsData: 'alt',
     captionDelay: 250,
   });
+  // lightBoxInstance.refresh();
 }
