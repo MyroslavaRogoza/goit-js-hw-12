@@ -1,6 +1,5 @@
 import axios from 'axios';
 const loader = document.querySelector('.loader');
-const loadMoreBtn = document.querySelector('.loadBtn');
 
 export class galleryApi {
   constructor() {
@@ -12,7 +11,7 @@ export class galleryApi {
     const params = new URLSearchParams({
       key: '42280899-738d1c20fb5924f395bcd6368',
       q: `${userInput}`,
-      image_type: 'photo',
+      images_type: 'photo',
       orientation: 'horizontal',
       safesearch: 'true',
       page: this.page,

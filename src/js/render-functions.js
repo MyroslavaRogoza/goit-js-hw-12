@@ -8,8 +8,6 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 
 import iconError from '../img/iconError.svg';
 
-import axios from 'axios';
-
 const form = document.querySelector('form');
 const container = document.querySelector('.gallery');
 const loader = document.querySelector('.loader');
@@ -52,7 +50,6 @@ function onFormSubmit(evt) {
       return item.hits;
     })
     .then(createGallery);
-  loadMoreBtn.classList.remove('hidden');
   evt.target.reset();
 }
 
@@ -103,6 +100,7 @@ function galleryItemTemplate({
 function createGallery(item) {
   const markup = item.map(galleryItemTemplate).join('');
   container.innerHTML = markup;
+  loadMoreBtn.classList.remove('hidden');
   lightBoxInstance = new SimpleLightbox('.gallery-link ', {
     captionPosition: 'bottom',
     captionSelector: 'img',
