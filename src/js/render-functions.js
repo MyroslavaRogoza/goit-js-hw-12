@@ -14,17 +14,20 @@ const form = document.querySelector('form');
 const container = document.querySelector('.gallery');
 const loader = document.querySelector('.loader');
 const loadMoreBtn = document.querySelector('.loadBtn');
-
+const galleryItem = new galleryApi();
 let query = null;
+let totalPages = 0;
+
 form.addEventListener('submit', onFormSubmit);
 function onFormSubmit(evt) {
   evt.preventDefault();
 
   const userData = evt.target.elements.userInput.value.trim();
   query = userData;
+  galleryItem.page = 1;
   loader.classList.remove('loader-hide');
   loadMoreBtn.classList.add('btn-hidden');
-  const galleryItem = new galleryApi();
+
   galleryItem
     .getDataImg(userData)
     .then(item => {
@@ -96,7 +99,6 @@ function galleryItemTemplate({
 function createGallery(item) {
   const markup = item.map(galleryItemTemplate).join('');
   container.innerHTML = markup;
- 
 
   let lightBoxInstance = new SimpleLightbox('.gallery-link ', {
     captionPosition: 'bottom',
@@ -107,6 +109,19 @@ function createGallery(item) {
   lightBoxInstance.refresh();
 }
 loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
-async function onLoadMoreBtnClick{
-  const response = await axios()
+async function onLoadMoreBtnClick() {
+  galleryItem.page++;
+
+  const response = await galleryItem.getDataImg(query);
+  totalPages = response.totalHits;
+  if (totalPages/galleryItem.per_page >= 0) {
+    loadMoreGalley(response.hits);
+  } else {
+    return;
+  }
+}
+
+function loadMoreGalley(item) {
+  const markup = item.map(galleryItemTemplate).join('');
+  container.insertAdjacentHTML('beforeend', markup);
 }

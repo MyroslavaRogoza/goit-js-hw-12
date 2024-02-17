@@ -5,6 +5,8 @@ const loadMoreBtn = document.querySelector('.loadBtn');
 export class galleryApi {
   constructor() {
     this.url = 'https://pixabay.com/api/?';
+    this.page = 1;
+    this.per_page = 15;
   }
   async getDataImg(userInput) {
     const params = new URLSearchParams({
@@ -13,8 +15,8 @@ export class galleryApi {
       image_type: 'photo',
       orientation: 'horizontal',
       safesearch: 'true',
-      page: 1,
-      per_page: 15,
+      page: this.page,
+      per_page: this.per_page,
     });
     try {
       const response = await axios.get(this.url + params);
